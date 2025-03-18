@@ -35,7 +35,7 @@ from browser_use.agent.views import (
 	StepMetadata,
 	ToolCallingMethod,
 )
-from browser_use.agent.captcha_solver import RecaptchaSolverProtocol
+from browser_use.agent.captcha_solver import CaptchaSolverProtocol
 from browser_use.browser.browser import Browser
 from browser_use.browser.context import BrowserContext
 from browser_use.browser.views import BrowserState, BrowserStateHistory
@@ -129,7 +129,7 @@ class Agent(Generic[Context]):
 		injected_agent_state: Optional[AgentState] = None,
 		#
 		context: Context | None = None,
-		captcha_solver: Optional[RecaptchaSolverProtocol] = None,
+		captcha_solver: Optional[CaptchaSolverProtocol] = None,
 	):
 		if page_extraction_llm is None:
 			page_extraction_llm = llm
