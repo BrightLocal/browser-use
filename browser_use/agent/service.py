@@ -363,10 +363,10 @@ class Agent(Generic[Context]):
 			tokens = self._message_manager.state.history.current_tokens
 
 			if self.captcha_solver:
-				print("[INFO] Run captcha_solver.solve_captcha()")
+				logger.info('Run captcha_solver.solve_captcha()')
 				await self.captcha_solver.solve_captcha(self, False)
 			else:
-				print("[INFO] captcha_solver is empty, skipped")
+				logger.info('captcha_solver is empty, skipped')
 
 			try:
 				model_output = await self.get_next_action(input_messages)

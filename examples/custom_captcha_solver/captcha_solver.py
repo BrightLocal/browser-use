@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 
@@ -5,12 +6,13 @@ from playwright_recaptcha import recaptchav2
 
 from browser_use.agent.service import Agent
 
+logger = logging.getLogger("captcha_solver")
 
 class ReCaptchaSolver:
     async def solve_captcha(self, context: Agent, image_challenge: bool) -> None:
         captcha_key = os.getenv("CAPSOLVER_API_KEY")
         if not captcha_key and image_challenge:
-            print("[WARNING] CAPSOLVER_API_KEY is not set in environment variables.")
+            logger.warning("CAPSOLVER_API_KEY is not set in environment variables.")
         try:
             page = await context.browser_context.get_current_page()
 
@@ -21,19 +23,19 @@ class ReCaptchaSolver:
                 # Check is reCAPTCHA already solved
                 checkbox_locator = recaptcha_frame_locator.locator("span[aria-checked='true']")
                 if await checkbox_locator.count() > 0:
-                    print("[INFO] reCAPTCHA already solved.")
+                    logger.info("reCAPTCHA already solved.")
                     return
 
-                print("[INFO] reCAPTCHA found, solving using audio...")
+                logger.info("reCAPTCHA found, solving using audio...")
                 solver = recaptchav2.AsyncSolver(page, capsolver_api_key=captcha_key)
                 await solver.solve_recaptcha(wait=True, image_challenge=image_challenge)
             else:
-                print("[INFO] reCAPTCHA not found.")
+                logger.info("reCAPTCHA not found.")
         except Exception as e:
             if not image_challenge:
                 time.sleep(1)
                 await context.browser_context.refresh_page()
-                print(f"[INFO] Retry reCAPTCHA solving using Capsolver...")
+                logger.info("Retry reCAPTCHA solving using Capsolver...")
                 await self.solve_captcha(context, True)
             else:
-                print(f"[ERROR] Error during solving reCAPTCHA: {e}")
+                logger.error(f"Error during solving reCAPTCHA: {e}")
