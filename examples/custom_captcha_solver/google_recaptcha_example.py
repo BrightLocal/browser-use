@@ -16,7 +16,6 @@ browser = Browser(
     config=BrowserConfig(
         disable_security=True,
         headless=False,
-        #new_context_config=BrowserContextConfig(save_recording_path='./tmp/ridespa'),
     )
 )
 llm = ChatOpenAI(model="gpt-4o")
