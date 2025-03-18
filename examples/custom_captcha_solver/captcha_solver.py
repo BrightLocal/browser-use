@@ -14,11 +14,19 @@ class ReCaptchaSolver:
         try:
             page = await context.browser_context.get_current_page()
 
-            if await page.locator("iframe[title='reCAPTCHA']").count():
+            recaptcha_frame_locator = page.frame_locator("iframe[title='reCAPTCHA']")
+            recaptcha_iframes = await page.locator("iframe[title='reCAPTCHA']").count()
+
+            if recaptcha_iframes:
+                # Check is reCAPTCHA already solved
+                checkbox_locator = recaptcha_frame_locator.locator("span[aria-checked='true']")
+                if await checkbox_locator.count() > 0:
+                    print("[INFO] reCAPTCHA already solved.")
+                    return
+
                 print("[INFO] reCAPTCHA found, solving using audio...")
                 solver = recaptchav2.AsyncSolver(page, capsolver_api_key=captcha_key)
                 await solver.solve_recaptcha(wait=True, image_challenge=image_challenge)
-                print("[INFO] reCAPTCHA solved.")
             else:
                 print("[INFO] reCAPTCHA not found.")
         except Exception as e:

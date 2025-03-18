@@ -6,7 +6,7 @@ from langchain_openai import ChatOpenAI
 from browser_use.agent.service import Agent
 from browser_use.browser.browser import Browser, BrowserConfig
 from browser_use.browser.context import BrowserContextConfig
-from examples.custom_captcha_solver.captcha_resolver import ReCaptchaSolver
+from examples.custom_captcha_solver.captcha_solver import ReCaptchaSolver
 
 load_dotenv()
 
